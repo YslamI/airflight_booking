@@ -5,122 +5,68 @@
     <title>YCT Bookings - Register</title>
     <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, sans-serif; background-color: #f0f4f8; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .nav { width: 100%; max-width: 600px; padding: 15px; background: white; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; justify-content: space-around; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f4f8; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .nav { width: 100%; max-width: 600px; padding: 15px; background: white; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; justify-content: space-between; }
         .nav a { text-decoration: none; color: #2b6cb0; font-weight: 600; }
-        .form-box { background: white; border-radius: 12px; padding: 30px; width: 100%; max-width: 600px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 40px; }
+        .form-box { background: white; border-radius: 12px; padding: 30px; width: 100%; max-width: 600px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         h3 { color: #2b6cb0; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px; margin-top: 30px; }
         label { font-weight: 600; color: #4a5568; display: block; margin-bottom: 5px; margin-top: 15px;}
-        input, select { width: 100%; padding: 10px; margin-bottom: 5px; border: 1px solid #cbd5e0; border-radius: 6px; box-sizing: border-box; font-family: inherit;}
+        input, select { width: 100%; padding: 10px; margin-bottom: 5px; border: 1px solid #cbd5e0; border-radius: 6px; box-sizing: border-box; }
         .card-entry { background-color: #f7fafc; padding: 15px; border-radius: 8px; border: 1px dashed #cbd5e0; margin-bottom: 15px; }
-        .btn-primary { background-color: #3182ce; color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: 600; width: 100%; font-size: 16px; margin-top: 20px;}
-        .btn-primary:hover { background-color: #2b6cb0; }
-        .btn-secondary { background-color: #edf2f7; color: #2d3748; border: 1px solid #cbd5e0; padding: 8px; border-radius: 6px; cursor: pointer; font-weight: 600; width: 100%; margin-top: 10px;}
-        .btn-secondary:hover { background-color: #e2e8f0; }
+        button { background-color: #3182ce; color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: 600; width: 100%; margin-top: 20px;}
         .flash { padding: 15px; border-radius: 6px; margin-bottom: 20px; width: 100%; max-width: 600px; text-align: center; font-weight: 600; }
-        .success { background-color: #c6f6d5; color: #22543d; }
         .error { background-color: #fed7d7; color: #822727; }
     </style>
 </head>
 <body>
     <div class="nav">
         <a href="/">✈️ Search Flights</a>
-        <a href="/register">📝 Register Customer</a>
-        <a href="/manage">📂 Manage Bookings</a>
+        <a href="/login">🔑 Login</a>
     </div>
 
     <h1>Customer Registration</h1>
-
     {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for category, message in messages %}
-          <div class="flash {{ category }}">{{ message }}</div>
-        {% endfor %}
-      {% endif %}
+      {% if messages %}{% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}{% endif %}
     {% endwith %}
 
     <div class="form-box">
         <form action="/register" method="POST">
-            
-            <h3>Personal Information</h3>
-            <label>Email Address:</label>
-            <input type="email" name="email" required placeholder="name@example.com">
-            
-            <label>Password:</label>
-            <input type="password" name="password" required placeholder="Create a secure password">
-            
-            <label>First Name:</label>
-            <input type="text" name="first_name" required>
-            
-            <label>Last Name:</label>
-            <input type="text" name="last_name" required>
-            
-            <label>Home Airport:</label>
+            <h3>Personal Info</h3>
+            <input type="email" name="email" required placeholder="Email">
+            <input type="password" name="password" required placeholder="Password">
+            <input type="text" name="first_name" required placeholder="First Name">
+            <input type="text" name="last_name" required placeholder="Last Name">
             <select name="home_airport" required>
-                <option value="MIA">Miami International (MIA)</option>
-                <option value="SEA">Seattle-Tacoma (SEA)</option>
-                <option value="DEN">Denver International (DEN)</option>
-                <option value="BOS">Boston Logan (BOS)</option>
+                <option value="MIA">MIA - Miami</option><option value="SEA">SEA - Seattle</option>
+                <option value="DEN">DEN - Denver</option><option value="BOS">BOS - Boston</option>
             </select>
 
             <h3>Billing Address</h3>
-            <label>Street:</label>
-            <input type="text" name="street" required placeholder="123 Main St">
-            
-            <div style="display: flex; gap: 10px;">
-                <div style="flex: 2;">
-                    <label>City:</label>
-                    <input type="text" name="city" required>
-                </div>
-                <div style="flex: 1;">
-                    <label>State:</label>
-                    <input type="text" name="state" required maxlength="2" placeholder="IL">
-                </div>
-                <div style="flex: 1;">
-                    <label>Zip Code:</label>
-                    <input type="text" name="zip_code" required maxlength="5">
-                </div>
+            <input type="text" name="street" required placeholder="Street">
+            <div style="display:flex; gap:10px;">
+                <input type="text" name="city" required placeholder="City">
+                <input type="text" name="state" required maxlength="2" placeholder="State (e.g. FL)">
+                <input type="text" name="zip_code" required maxlength="5" placeholder="Zip">
             </div>
 
-            <h3>Payment Methods</h3>
-            <p style="font-size: 14px; color: #718096; margin-top: 0;">Add at least one card. You can add more if needed.</p>
-            
+            <h3>Payment Method</h3>
             <div id="cards-container">
                 <div class="card-entry">
-                    <label>Card Number:</label>
-                    <input type="text" name="card_number" required maxlength="16" placeholder="16-Digit Number (No Spaces)">
-                    
-                    <label>Name on Card:</label>
-                    <input type="text" name="holder_name" required placeholder="e.g. John Doe">
-                    
-                    <label>Expiration Date:</label>
+                    <input type="text" name="card_number" required maxlength="16" placeholder="16-Digit Card Number">
+                    <input type="text" name="holder_name" required placeholder="Name on Card">
                     <input type="text" name="expiry_date" required maxlength="5" placeholder="MM/YY">
                 </div>
             </div>
+            <button type="button" style="background:#edf2f7; color:#2d3748; border:1px solid #cbd5e0;" onclick="addCardField()">+ Add Another Card</button>
 
-            <button type="button" class="btn-secondary" onclick="addCardField()">+ Add Another Card</button>
-
-            <button type="submit" class="btn-primary">Create Account & Save Payment</button>
+            <button type="submit">Create Account</button>
         </form>
     </div>
-
     <script>
         function addCardField() {
-            // Find the container and the first card entry
             const container = document.getElementById('cards-container');
-            const originalCard = document.querySelector('.card-entry');
-            
-            // Clone the HTML
-            const newCard = originalCard.cloneNode(true);
-            
-            // Clear out the text values so the user doesn't copy the first card's numbers
-            const inputs = newCard.querySelectorAll('input');
-            inputs.forEach(input => input.value = '');
-            
-            // Note: We remove the 'required' tag from the duplicates so they can leave them blank if they change their mind
-            inputs.forEach(input => input.removeAttribute('required'));
-            
-            // Append the new blank card to the container
+            const newCard = document.querySelector('.card-entry').cloneNode(true);
+            newCard.querySelectorAll('input').forEach(i => { i.value = ''; i.removeAttribute('required'); });
             container.appendChild(newCard);
         }
     </script>
