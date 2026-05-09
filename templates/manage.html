@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>YCT Bookings - Manage</title>
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, sans-serif; background-color: #f0f4f8; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .nav { width: 100%; max-width: 800px; padding: 15px; background: white; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; gap: 20px; }
+        .nav a { text-decoration: none; color: #2b6cb0; font-weight: 600; }
+        .search-box { background: white; border-radius: 12px; padding: 30px; width: 100%; max-width: 500px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px;}
+        input { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #cbd5e0; border-radius: 6px; box-sizing: border-box; }
+        button { background-color: #3182ce; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: 600; width: 100%; }
+        table { border-collapse: collapse; width: 100%; max-width: 800px; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        th { background-color: #2b6cb0; color: white; }
+        .flash { padding: 15px; border-radius: 6px; margin-bottom: 20px; width: 100%; max-width: 800px; text-align: center; font-weight: 600; }
+        .success { background-color: #c6f6d5; color: #22543d; }
+        .error { background-color: #fed7d7; color: #822727; }
+        .cancel-btn { background-color: #e53e3e; }
+        .cancel-btn:hover { background-color: #c53030; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/">✈️ Search Flights</a>
+        <a href="/register">📝 Register Customer</a>
+        <a href="/manage">📂 Manage Bookings</a>
+    </div>
+
+    <h1>Manage Bookings</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="search-box">
+        <p>Enter your email to view your active bookings:</p>
+        <form action="/manage" method="POST">
+            <input type="email" name="email" required placeholder="name@example.com" value="{{ email if email else 'julia.brown@example.com' }}">
+            <button type="submit">Find Bookings</button>
+        </form>
+    </div>
+
+    {% if email %}
+        {% if bookings %}
+            <table>
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Flight</th>
+                    <th>Date</th>
+                    <th>Class</th>
+                    <th>Price</th>
+                    <th>Action</th>
+                </tr>
+                {% for b in bookings %}
+                <tr>
+                    <td>#{{ b.booking_id }}</td>
+                    <td>{{ b.airline_code }} {{ b.flight_number }}</td>
+                    <td>{{ b.flight_date }}</td>
+                    <td>{{ b.seat_class }}</td>
+                    <td>${{ b.total_price }}</td>
+                    <td>
+                        <form action="/cancel/{{ b.booking_id }}" method="POST" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
+                            <button type="submit" class="cancel-btn">Cancel</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>No active bookings found for {{ email }}.</p>
+        {% endif %}
+    {% endif %}
+</body>
+</html>

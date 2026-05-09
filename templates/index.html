@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>YCT Bookings - Search</title>
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f8; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .nav { width: 100%; max-width: 1000px; padding: 15px; background: white; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; gap: 20px; }
+        .nav a { text-decoration: none; color: #2b6cb0; font-weight: 600; }
+        .nav a:hover { text-decoration: underline; }
+        h1 { color: #1a365d; }
+        .search-box { background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); padding: 30px; width: 100%; max-width: 500px; margin-bottom: 20px; }
+        input { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #cbd5e0; border-radius: 6px; box-sizing: border-box; }
+        button { background-color: #3182ce; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: 600; width: 100%; }
+        button:hover { background-color: #2b6cb0; }
+        table { border-collapse: collapse; width: 100%; max-width: 1100px; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        th { background-color: #2b6cb0; color: white; }
+        .flash { padding: 15px; border-radius: 6px; margin-bottom: 20px; width: 100%; max-width: 500px; text-align: center; font-weight: 600; }
+        .success { background-color: #c6f6d5; color: #22543d; }
+        .error { background-color: #fed7d7; color: #822727; }
+        .book-form { display: flex; flex-direction: column; gap: 5px; }
+        .book-form input { margin-bottom: 0; padding: 5px; font-size: 12px;}
+        .book-form button { background-color: #48bb78; margin-top: 5px;}
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/">✈️ Search Flights</a>
+        <a href="/register">📝 Register Customer</a>
+        <a href="/manage">📂 Manage Bookings</a>
+    </div>
+
+    <h1>Search Flights</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="search-box">
+        <form action="/search" method="POST">
+            <label>Departure (IATA):</label>
+            <input type="text" name="departure_airport" required maxlength="3" value="MIA">
+            <label>Destination (IATA):</label>
+            <input type="text" name="destination_airport" required maxlength="3" value="SEA">
+            <label>Flight Date:</label>
+            <input type="date" name="flight_date" required value="2026-05-10">
+            <button type="submit">Search Flights</button>
+        </form>
+    </div>
+
+    {% if search_performed %}
+        {% if flights %}
+            <table>
+                <tr>
+                    <th>Flight</th>
+                    <th>Date</th>
+                    <th>Times</th>
+                    <th>Economy (E)</th>
+                    <th>First Class (F)</th>
+                    <th>Book This Flight</th>
+                </tr>
+                {% for flight in flights %}
+                <tr>
+                    <td>{{ flight.airline_code }} {{ flight.flight_number }}</td>
+                    <td>{{ flight.flight_date }}</td>
+                    <td>{{ flight.departure_time }} - {{ flight.arrival_time }}</td>
+                    <td>${{ flight.economy_price }}</td>
+                    <td>${{ flight.first_class_price }}</td>
+                    <td>
+                        <form class="book-form" action="/book" method="POST">
+                            <input type="hidden" name="airline_code" value="{{ flight.airline_code }}">
+                            <input type="hidden" name="flight_number" value="{{ flight.flight_number }}">
+                            <input type="hidden" name="flight_date" value="{{ flight.flight_date }}">
+                            
+                            <input type="email" name="email" placeholder="Your Email" required value="julia.brown@example.com">
+                            <input type="text" name="card_number" placeholder="16-Digit Card" required maxlength="16" value="4000123412341234">
+                            
+                            <select name="seat_class" required style="padding: 5px; border-radius: 4px;">
+                                <option value="E">Economy</option>
+                                <option value="F">First Class</option>
+                            </select>
+                            
+                            <input type="hidden" name="price" value="{{ flight.economy_price }}">
+                            <button type="submit">Confirm Booking</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>No flights found.</p>
+        {% endif %}
+    {% endif %}
+</body>
+</html>
